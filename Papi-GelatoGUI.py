@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter
 from tkinter import messagebox
-from unittest import loader
 import yaml
 from yaml.loader import SafeLoader, BaseLoader, FullLoader
-with open('C:/Users/Jurrian/Documents/Projecten/read-files/settings.yml') as f:
-    data = yaml.safe_load(f, Loader=SafeLoader)
-    print(data)
+with open('C:/Users/Jurrian/Documents/read-files/settings.yml', 'r') as file:
+    prijzen = yaml.safe_load(file)
+
+
+
 lijstMetToppings = ["sr", "slagroom", "sp", "sprinkels", "cs", "caramelsaus"]
 bakje = 0
 hoorntje = 0
@@ -54,13 +55,13 @@ def checkSmaak():
             litersOfBolletjesBesteld("liter")
 
 def bonZakelijk():
-        total = my_formatter.format(answerSpin2.get()*9.80)
-        btwZakelijk = my_formatter.format(round(float(total)) / 100 * 9)
+        total = my_formatter.format(answerSpin2.get()*prijzen['liter'])
+        btwZakelijk = my_formatter.format(round(float(total)) / 100 * prijzen['btw'])
         bonLabel = tkinter.Label(window, text=f"""Bedankt en tot ziens!\n---------[Papi Gelato]---------
-Liter:  {answerSpin2.get()} X €9,80 = € {total}
+Liter:  {answerSpin2.get()} X €{prijzen['liter']} = € {total}
 -------------------------------
 Totaal: {total}
-BTW (9%): € {btwZakelijk}""")
+BTW ({prijzen['btw']}%): € {btwZakelijk}""")
         bonLabel.grid()
 
 def topping():
@@ -74,34 +75,34 @@ def topping():
     startButton.wait_variable(radioAnswer)
     if radioAnswer.get() == "SR":
         aantalToppings += 1
-        toppingKosten += 0.50
+        toppingKosten += prijzen['toppings']['slagroom']
     elif radioAnswer.get() == "SP":
         aantalToppings += 1
-        toppingKosten += (0.30*int(aantalBolletjes))
+        toppingKosten += (prijzen['toppings']['sprinkels']*int(aantalBolletjes))
     elif radioAnswer.get() == "CS":
         aantalToppings += 1
         if soortVerpakking == "B":
-            toppingKosten += 0.90
+            toppingKosten += prijzen['toppings']['caramel']['bakje']
         elif soortVerpakking == "H":
-            toppingKosten += 0.60
+            toppingKosten += prijzen['toppings']['caramel']['hoorentje']
     elif radioAnswer.get() == "G":
         pass
 
 def bonParticulier():
     global bonLabel1, bonLabel2, bakjeLabel, hoorntjeLabel, toppingLabel,totalLabel
-    total = my_formatter.format(aantalBolletjes*0.95 + (aantalToppings * toppingKosten) + (hoorntje * 1.25) + (bakje * 0.75))
+    total = my_formatter.format(aantalBolletjes*prijzen['bolletjes'] + (aantalToppings * toppingKosten) + (hoorntje * prijzen['hoorentjes']) + (bakje * 0.75))
     formattedToppings = my_formatter.format(aantalToppings * toppingKosten)
 
-    prijsBolletjes = my_formatter.format(aantalBolletjes*0.95)
+    prijsBolletjes = my_formatter.format(aantalBolletjes*prijzen['bolletjes'])
     bonLabel1 = tkinter.Label(window, text=f"Bedankt en tot ziens!\n---------[Papi Gelato]---------")
     bonLabel1.grid()
     if bakje > 0:
-        bakjeLabel = tkinter.Label(window, text=f"Bakje: {bakje} X 0.75 = {bakje * 0.75}")
+        bakjeLabel = tkinter.Label(window, text=f"Bakje: {bakje} X €{prijzen['bakjes']} = {bakje * prijzen['bakjes']}")
         bakjeLabel.grid()
     if hoorntje > 0:
-        hoorntjeLabel = tkinter.Label(window, text=f"Hoorntje: {hoorntje} X 1.25 = {hoorntje * 1.25}")
+        hoorntjeLabel = tkinter.Label(window, text=f"Hoorntje: {hoorntje} X €{prijzen['hoorentjes']} = {hoorntje * prijzen['hoorentjes']}")
         hoorntjeLabel.grid()
-    bonLabel2 = tkinter.Label(window, text=f"""Bolletjes: {aantalBolletjes} X €0,95 = € {prijsBolletjes}""")
+    bonLabel2 = tkinter.Label(window, text=f"""Bolletjes: {aantalBolletjes} X €{prijzen['bolletjes']} = € {prijsBolletjes}""")
     bonLabel2.grid()
     if aantalToppings > 0:
         toppingLabel = tkinter.Label(window, text=f"Topping: {aantalToppings} X {my_formatter.format(toppingKosten)} € {formattedToppings}") 

@@ -1,6 +1,6 @@
 import time
 
-file = open("C:/Users/Jurrian/Documents/Projecten/read-files/README.md", "r")
+file = open("C:/Users/Jurrian/Documents/read-files/README.md", "r")
 
 line = True
 
